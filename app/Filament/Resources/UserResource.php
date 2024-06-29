@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -17,7 +18,9 @@ class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
+    protected static ?string $modelLabel = 'Usuários';
 
     public static function form(Form $form): Form
     {
@@ -31,13 +34,35 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('name')
+                    ->label('Nome')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('comments_count')
+                    ->label('Comentários')
+                    ->sortable()
+                    ->counts('comments'),
+                TextColumn::make('created_at')
+                    ->label('Criado em')
+                    ->sortable()
+                    ->dateTime()
+                    ->toggleable(isToggledHiddenByDefault:true),
+                TextColumn::make('updated_em')
+                    ->label('Atualizado em')
+                    ->sortable()
+                    ->dateTime()
+                    ->toggleable(isToggledHiddenByDefault:true),
             ])
             ->filters([
                 //
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
