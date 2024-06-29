@@ -6,10 +6,14 @@ use App\Filament\Resources\UserResource\Pages;
 use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +31,37 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                //
+                TextInput::make('name')
+                    ->label('Nome')
+                    ->placeholder('Nome do Usuário')
+                    ->required(),
+
+                TextInput::make('email')
+                    ->label('Email')
+                    ->placeholder('Email do Usuário')
+                    ->unique(ignoreRecord:true)
+                    ->required(),
+
+                TextInput::make('password')
+                    ->rules(['required'])
+                    ->label('Senha')
+                    ->placeholder('******')
+                    //->revealable()
+                    ->required(),
+
+                TextInput::make('phone')
+                    ->label('Telefone')
+                    ->mask('(99) 99999-9999')
+                    ->placeholder('(__) _____-____')
+                    ->required(),
+
+                FileUpload::make('avatar')
+                    ->directory('avatars')
+                    ->imageEditor()
+                    ->avatar(),
+
+                Toggle::make('is_admin'),
+
             ]);
     }
 
@@ -44,6 +78,8 @@ class UserResource extends Resource
                     //->color(function (string $state) {
                     //    return $state === '1' ? 'success' : 'danger';
                     //})
+                ImageColumn::make('avatar')
+                    ->circular(),
                 TextColumn::make('name')
                     ->label('Nome')
                     ->sortable()

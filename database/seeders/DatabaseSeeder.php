@@ -23,11 +23,11 @@ class DatabaseSeeder extends Seeder
         Comment::factory(10)->create();
         Reply::factory(10)->create();
 
-        //User::factory()->create([
-        //    'name' => 'Ygor Combi',
-        //    'is_admin' => true,
-        //    'email' => 'test@example.com',
-        //    'password' => '123456',
-        //]);
+        User::factory()->create([
+            'name' => 'Ygor Combi',
+            'is_admin' => true,
+            'email' => 'test@example.com',
+            'password' => '123456',
+        ]);
     }
 }
