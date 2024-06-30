@@ -7,6 +7,7 @@ use App\Filament\Resources\UserResource\RelationManagers;
 use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
@@ -31,37 +32,57 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->label('Nome')
-                    ->placeholder('Nome do Usuário')
-                    ->required(),
+                Section::make('Informações do usuário')
+                    ->description(function ($operation) {
+                        if ($operation === 'create') {
+                            return 'Crie um novo usuário';
+                        }
+                        return 'Atualize as informações do usuário';
+                    })
+                    ->columns(2)
+                    ->icon('heroicon-o-user')
+                    ->collapsible()
+                    //->collapsed()
+                    ->schema([
+                        TextInput::make('name')
+                            ->label('Nome')
+                            ->placeholder('Nome do Usuário')
+                            ->required(),
 
-                TextInput::make('email')
-                    ->label('Email')
-                    ->placeholder('Email do Usuário')
-                    ->unique(ignoreRecord:true)
-                    ->required(),
+                        TextInput::make('email')
+                            ->label('Email')
+                            ->placeholder('Email do Usuário')
+                            ->unique(ignoreRecord:true)
+                            ->required(),
 
-                TextInput::make('password')
-                    ->rules(['required'])
-                    ->label('Senha')
-                    ->placeholder('******')
-                    //->revealable()
-                    ->required(),
+                        TextInput::make('password')
+                            ->rules(['required'])
+                            ->label('Senha')
+                            ->placeholder('******')
+                            //->revealable()
+                            ->required(),
 
-                TextInput::make('phone')
-                    ->label('Telefone')
-                    ->mask('(99) 99999-9999')
-                    ->placeholder('(__) _____-____')
-                    ->required(),
+                        TextInput::make('phone')
+                            ->label('Telefone')
+                            ->mask('(99) 99999-9999')
+                            ->placeholder('(__) _____-____')
+                            ->required()
+                    ]),
+                Section::make('Imagem de Perfil')
+                    ->description('Avatar do usuário')
+                    ->schema([
+                        FileUpload::make('avatar')
+                            ->directory('avatars')
+                            ->imageEditor()
+                            ->columnSpanFull()
+                            ->image()
+                    ]),
 
-                FileUpload::make('avatar')
-                    ->directory('avatars')
-                    ->imageEditor()
-                    ->avatar(),
-
-                Toggle::make('is_admin'),
-
+                Section::make('Poderes')
+                    ->description('Escolha se o novo usuário será administrador')
+                    ->schema([
+                        Toggle::make('is_admin')
+                    ]),
             ]);
     }
 
