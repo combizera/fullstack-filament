@@ -24,11 +24,12 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             //->sidebarCollapsibleOnDesktop()
+            //->font('Nova Square')
             ->default()
             ->id('admin')
             ->path('admin')
             ->login()
-            //->font('Nova Square')
+            ->profile()
             ->colors([
                 'primary' => Color::Indigo,
             ])
