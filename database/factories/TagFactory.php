@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 use App\Models\Tag;
 
 class TagFactory extends Factory
@@ -20,8 +19,10 @@ class TagFactory extends Factory
      */
     public function definition(): array
     {
+        $categories = ['Technology', 'Science', 'Health', 'Education'];
+
         return [
-            'tag_name' => $this->faker->regexify('[A-Za-z0-9]{100}'),
+            'tag_name' => $this->faker->randomElement($categories),
             'created_at' => $this->faker->dateTime(),
             'updated_at' => $this->faker->dateTime(),
         ];

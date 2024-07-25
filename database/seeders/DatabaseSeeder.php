@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
         $posts = Post::factory(10)
             ->recycle($users)
             ->recycle($categories)
-            ->recycle($tags)
+            //->recycle($tags)
             ->create();
         $comments = Comment::factory(10)
             ->recycle($users)

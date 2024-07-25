@@ -29,7 +29,6 @@ class Post extends Model
         'slug',
         'content',
         'user_id',
-        'tag_id',
     ];
 
     /**
@@ -40,7 +39,6 @@ class Post extends Model
     protected $casts = [
         'id' => 'integer',
         'user_id' => 'integer',
-        'tag_id' => 'integer',
         'created_at' => 'timestamp',
         'updated_at' => 'timestamp',
     ];
