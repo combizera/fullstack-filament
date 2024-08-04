@@ -38,8 +38,8 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Ygor Combi',
             'is_admin' => true,
-            'email' => 'test@example.com',
-            'password' => 'test@example.com',
+            'email' => 'admin@admin.com',
+            'password' => 'admin@admin.com',
         ]);
     }
 }
