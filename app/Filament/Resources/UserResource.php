@@ -11,14 +11,17 @@ use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class UserResource extends Resource
 {
@@ -132,12 +135,52 @@ class UserResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\ActionGroup::make([
-                    Tables\Actions\EditAction::make()
+                ActionGroup::make([
+                    EditAction::make()
                         ->color('primary')
                         ->label('Editar usuário'),
-                    Tables\Actions\DeleteAction::make()->color('danger'),
-                ])
+
+                    ViewAction::make()
+                        ->color('primary')
+                        ->icon('heroicon-o-document-text')
+                        ->slideOver()
+                        ->label('Ver usuário'),
+
+                    Tables\Actions\Action::make('is_admin')
+                        ->label(function (User $record){
+                            return $record->is_admin ? 'Remover admin' : 'Tornar admin';
+                        })
+                        ->color(function (User $record){
+                            return $record->is_admin ? 'danger' : 'success';
+                        })
+                        ->action(function (User $record) {
+                            //dd($record);
+                            $record->is_admin = !$record->is_admin;
+                            $record->save();
+                        })
+                        ->after(function (User $record) {
+                            if($record->is_admin){
+                                Notification::make()
+                                    ->success()
+                                    ->duration(2000)
+                                    ->title('Usuário é admin')
+                                    ->body('Usuário agora é admin')
+                                    ->send();
+                            } else {
+                                Notification::make()
+                                    ->danger()
+                                    ->duration(2000)
+                                    ->title('Usuário não é admin')
+                                    ->body('Usuário agora não é admin')
+                                    ->send();
+                            }
+                        })
+                        ->requiresConfirmation()
+                        ->icon('heroicon-o-user'),
+
+                    DeleteAction::make()
+                        ->color('danger'),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -158,6 +201,7 @@ class UserResource extends Resource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
+            //'view' => Pages\ViewUser::route('/{record}'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
         ];
     }
